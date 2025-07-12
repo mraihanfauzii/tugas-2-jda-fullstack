@@ -15,7 +15,6 @@ const handler = NextAuth({
             return null;
         }
 
-        // Cari pengguna di mock database global
         const userFound = mockUsers.find(
           (user) => user.email === credentials.email
         );
@@ -46,16 +45,20 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
       }
       return session;
     },
   },
 });
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, handler as authOptions };
